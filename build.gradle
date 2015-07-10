@@ -1,0 +1,71 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+mainClassName = 'com.helloworld.Application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile('org.projectlombok:lombok:1.16.4')
+    testCompile("junit:junit")
+}
+
+task bringUpAppServer(type: Exec) {
+    commandLine "vagrant", "up", "--no-provision"
+}
+
+task provisionAppServer(type: Exec) {
+    commandLine "vagrant", "provision"
+}
+
+task destroyAppServer(type: Exec) {
+    commandLine "vagrant", "destroy", "--force"
+}
+
+task appServerStatus(type: Exec) {
+    commandLine "vagrant", "status"
+}
+
+provisionAppServer.mustRunAfter(bringUpAppServer)
+
+task helloWorldJar(type: Copy, dependsOn: ['clean', 'assemble']) {
+    from jar.archivePath
+    into project.rootDir
+    rename {
+        'helloworld.jar'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+
+test {
+
+    clean.execute()
+    testLogging.showStandardStreams = true
+
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
