@@ -1,1 +1,1 @@
-web: java -Dserver.port=8088 -jar helloworld.jar
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar helloworld.jar
