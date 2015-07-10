@@ -22,10 +22,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "file", source: "infrastructure/scripts/service.sh", destination: "service/service.sh"
   config.vm.provision :shell, :path => "infrastructure/scripts/register-service.sh"
 
-  # Provision with puppet
-  #config.vm.provision "puppet" do |puppet|
-  #  puppet.manifests_path = "infrastructure/puppet/manifests"
-  #  puppet.manifest_file = "default.pp"
-  #end
-
 end
