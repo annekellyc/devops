@@ -54,6 +54,10 @@ task stage(type: Copy, dependsOn: ['clean', 'assemble']) {
 
 stage.mustRunAfter(clean)
 
+task deployLocalAppServer(type: Exec) {
+    commandLine "sh", "infrastructure/scripts/install.sh"
+}
+
 clean << {
     project.file('helloworld.jar').delete()
 }
