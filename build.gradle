@@ -44,12 +44,18 @@ task appServerStatus(type: Exec) {
 
 provisionAppServer.mustRunAfter(bringUpAppServer)
 
-task helloWorldJar(type: Copy, dependsOn: ['clean', 'assemble']) {
+task stage(type: Copy, dependsOn: ['clean', 'assemble']) {
     from jar.archivePath
     into project.rootDir
     rename {
         'helloworld.jar'
     }
+}
+
+stage.mustRunAfter(clean)
+
+clean << {
+    project.file('helloworld.jar').delete()
 }
 
 task wrapper(type: Wrapper) {
